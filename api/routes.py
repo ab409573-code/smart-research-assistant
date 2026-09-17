@@ -29,7 +29,7 @@ async def upload_pdf(file: UploadFile = File(...)):
         docs = extract_text_with_pages(file_path)
         chunks = chunk_documents(docs)
         # التعديل صار هنا: صار يرفع للسحابة بدال جهازك
-        store_documents_in_pinecone(chunks)
+        store_documents_in_pinecone(chunks) 
         return {"filename": file.filename, "status": "Indexed successfully", "chunks_count": len(chunks)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
