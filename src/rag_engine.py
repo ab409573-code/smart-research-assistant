@@ -1,6 +1,6 @@
 import os
 from pinecone import Pinecone as PineconeClient
-from langchain_community.vectorstores import Pinecone
+from langchain_pinecone import PineconeVectorStore
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain.chains import RetrievalQA
 from dotenv import load_dotenv
@@ -11,10 +11,9 @@ def ask_research_assistant(question: str, top_k: int = 3):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     index_name = os.environ.get("PINECONE_INDEX_NAME", "smart-research")
     
-    vectorstore = Pinecone.from_existing_index(index_name, embeddings)
+    vectorstore = PineconeVectorStore.from_existing_index(index_name, embeddings)
     retriever = vectorstore.as_retriever(search_kwargs={"k": top_k})
     
-    # استخدام Gemini للإجابة
     llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro", temperature=0.3)
     
     qa_chain = RetrievalQA.from_chain_type(
