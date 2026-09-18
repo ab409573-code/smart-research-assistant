@@ -1,18 +1,16 @@
 from fastapi import FastAPI
-from api.routes import router  # استدعاء مسارات الذكاء الاصطناعي
+from fastapi.middleware.cors import CORSMiddleware
+from api.routes import router # أو حسب مسار الاستدعاء لديك
 
-app = FastAPI(
-    title="Smart Research Assistant API",
-    version="1.0.0"
+app = FastAPI()
+
+# هذا الكود يسمح للسيرفر باستقبال الطلبات من أي واجهة خارجية
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# دمج مسارات الذكاء الاصطناعي مع التطبيق الرئيسي تحت رابط /api
-app.include_router(router, prefix="/api")
-
-@app.get("/health")
-def health_check():
-    return {
-        "status": "active",
-        "project": "Smart Research Assistant",
-        "message": "Backend server is running smoothly!"
-    }
+app.include_router(router)
