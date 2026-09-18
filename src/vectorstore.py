@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def store_documents_in_pinecone(chunks):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
     pc = PineconeClient(api_key=os.environ.get("PINECONE_API_KEY"))
     index_name = os.environ.get("PINECONE_INDEX_NAME", "smart-research")
     
