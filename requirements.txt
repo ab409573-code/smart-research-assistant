@@ -8,3 +8,8 @@ python-dotenv
 pypdf
 google-generativeai
 pydantic
+pypdf
+langchain-community
+langchain-text-splitters
+pypdf
+langchain-community

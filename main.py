@@ -8,10 +8,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 # استدعاء دوال الذكاء الاصطناعي وقاعدة البيانات
-from src.vectorstore import query_pinecone
-# from src.vectorstore import store_documents_in_pinecone # أزل علامة # عند تفعيل الرفع لـ Pinecone
+from src.vectorstore import query_pinecone, store_documents_in_pinecone
 from langchain_google_genai import ChatGoogleGenerativeAI
-
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 # تحميل متغيرات البيئة
 load_dotenv()
 
@@ -51,6 +51,20 @@ async def startup_event():
 TEMP_DIR = Path("temp_uploads")
 TEMP_DIR.mkdir(exist_ok=True)
 
+# دالة استخراج النصوص من PDF وتقسيمها لأجزاء صغيرة
+def extract_chunks_from_pdf(file_path: str):
+    logger.info(f"🔄 Extracting text from PDF: {file_path}")
+    loader = PyPDFLoader(file_path)
+    pages = loader.load()
+    
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000,
+        chunk_overlap=200
+    )
+    chunks = splitter.split_documents(pages)
+    logger.info(f"✓ Extracted {len(chunks)} chunks from PDF")
+    return chunks
+
 # 1. مسار رفع الملفات
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
@@ -80,9 +94,9 @@ async def upload_file(file: UploadFile = File(...)):
             shutil.copyfileobj(file.file, buffer)
         logger.info(f"✓ File saved to disk: {file_path}")
         
-        # هنا يتم معالجة الـ PDF ورفعه لـ Pinecone
-        # chunks = extract_chunks_from_pdf(str(file_path))
-        # store_documents_in_pinecone(chunks)
+        # استخراج النصوص وتقسيمها ثم تخزينها في Pinecone
+        chunks = extract_chunks_from_pdf(str(file_path))
+        store_documents_in_pinecone(chunks)
         
         logger.info(f"✓ Successfully processed {file.filename}")
         return {
