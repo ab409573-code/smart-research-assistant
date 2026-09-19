@@ -126,7 +126,7 @@ def process_query(request: QueryRequest):
         context = "\n\n".join([doc.page_content for doc in docs])
         
         # تجهيز نموذج الذكاء الاصطناعي
-        llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.3)
+        llm = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.3)
         prompt = f"أجب على السؤال بناءً على المعلومات التالية فقط.\n\nالمعلومات:\n{context}\n\nالسؤال: {request.query}"
         
         # توليد الإجابة
