@@ -35,7 +35,7 @@ def store_documents_in_pinecone(chunks):
         # Initialize embeddings
         logger.info("🔄 Loading Google Generative AI embeddings...")
         embeddings = GoogleGenerativeAIEmbeddings(
-            model="models/text-embedding-004",
+            model="models/text-embedding-001",
             google_api_key=os.getenv("GOOGLE_API_KEY")
         )
         
